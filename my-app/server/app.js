@@ -5,32 +5,56 @@ const mysql = require('mysql')
 const cors = require('cors')
 app.use(cors())
 
-
 app.use(express.urlencoded({
-extended: true
+    extended: true
 }))
 app.use(express.json());
 
 const con = mysql.createConnection({
-  host: "localhost",
-  user: "database",
-  password: ""
+    host: "localhost",
+    user: "database",
+    password: "",
+    database: "zoo",
 });
 
 con.connect(function(err) {
-  if (err) throw err;
-  console.log("Connected!");
+    if (err) throw err;
+    console.log("Connected!");
 });
 
-//routing part
+//Routing
 app.get('/', (req, res) => {
-  res.send('Hello!')
+    res.send('Labas, ka tu? As tai nieko.')
 })
 
 app.get('/labas/:id', (req, res) => {
-  res.send(`Pats tu ${req.params.id}.`)
+    res.send(`Pats tu ${req.params.id}.`)
 })
 
+app.get('/test', (req, res) => {
+    res.send(JSON.stringify({ test: 'OK' }))
+})
+
+// Visi gyvunai
+app.get('/animals', (req, res) => {
+    const sql = `
+        SELECT *
+        FROM animals
+    `;
+    con.query(sql, (err, results) => {
+        if (err) {
+            throw err;
+        }
+        res.send(results);
+    })
+})
+
+
+
+
+
+
+
 app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
+    // console.log(`Example app listening at http://localhost:${port}`)
 })
